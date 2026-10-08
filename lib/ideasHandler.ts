@@ -154,6 +154,7 @@ GUARDRAILS & RULES:
    - downsideBuffer
    - volatilityFlag
    - capitalPreservationNote
+8. FMP Free Tier Compatibility: Base all FMP market metrics strictly on data available under the Financial Modeling Prep (FMP) Free Tier plan (standard stock quotes, P/E ratios, 52-week high/low range, daily volume, and market gainers for US equities on NYSE/NASDAQ). All stock tickers recommended must be tradeable on US exchanges.
 
 Respond ONLY with valid JSON with this exact structure:
 {

@@ -438,29 +438,60 @@ export class McpRuntimeManager {
           }
         }
 
-        // 4. Financial Modeling Prep (FMP)
+        // 4. Financial Modeling Prep (FMP) - Free Tier Plan Compatible
         if (server.id === 'fmp') {
-          const quoteTool = tools.find((t) => t.includes('quote') || t.includes('screener') || t.includes('metrics')) || tools[0];
+          let fmpGathered = false;
+          const quoteTool = tools.find((t) => t.includes('quote') || t.includes('screener') || t.includes('metrics') || t.includes('stock')) || tools[0];
           if (quoteTool) {
             try {
+              // FMP Free Tier supports US exchanges (NASDAQ, NYSE)
+              const safeExchange = (params.exchanges[0] === 'SGX' || params.exchanges[0] === 'HKEX' || params.exchanges[0] === 'LSE') ? 'NASDAQ' : (params.exchanges[0] || 'NASDAQ');
               const res = await this.executeToolCall(server, quoteTool, {
                 sector: params.sectors[0] || 'Technology',
-                exchange: params.exchanges[0] || 'NASDAQ',
+                exchange: safeExchange,
               });
               const data = res?.result?.data || res?.result?.quotes || [];
-              if (Array.isArray(data)) {
+              if (Array.isArray(data) && data.length > 0) {
+                fmpGathered = true;
                 data.slice(0, 3).forEach((d: any) => {
                   evidence.push({
                     sourceId: 'fmp',
-                    sourceName: 'Financial Modeling Prep (FMP)',
-                    title: `${d.symbol || 'TICKER'} Valuation & Momentum`,
-                    content: `P/E: ${d.pe || 'N/A'}, 52-Week Range: ${d.yearRange || 'N/A'}, Volume Surge: ${d.volumeRatio || 'High'}`.slice(0, 200),
+                    sourceName: 'Financial Modeling Prep (FMP Free Tier)',
+                    title: `${d.symbol || 'US Equity'} Valuation & Fundamentals`,
+                    content: `Price: $${d.price || 'N/A'}, P/E: ${d.pe || 'N/A'}, 52W Range: ${d.yearRange || 'N/A'}, Volume: ${d.volume || 'Active'}`.slice(0, 200),
                     timestamp: new Date().toISOString(),
                   });
                 });
               }
             } catch (err: any) {
               console.warn(`[FMP tool error]: ${err.message}`);
+            }
+          }
+
+          // Direct FMP Free Tier fallback (Gainers & Quotes on NYSE/NASDAQ)
+          if (!fmpGathered && process.env.FMP_ACCESS_TOKEN) {
+            try {
+              const cleanToken = process.env.FMP_ACCESS_TOKEN.trim().replace(/^["']|["']$/g, '');
+              const fmpRes = await fetch(
+                `https://financialmodelingprep.com/api/v3/stock_market/gainers?apikey=${cleanToken}`,
+                { signal: AbortSignal.timeout(2000) }
+              );
+              if (fmpRes.ok) {
+                const gainers = await fmpRes.json();
+                if (Array.isArray(gainers) && gainers.length > 0) {
+                  gainers.slice(0, 3).forEach((g: any) => {
+                    evidence.push({
+                      sourceId: 'fmp',
+                      sourceName: 'Financial Modeling Prep (FMP Free Tier)',
+                      title: `${g.symbol} Momentum & Quote Data`,
+                      content: `Price: $${g.price}, Change: +${g.changesPercentage?.toFixed?.(2) || g.change}%, Volume: ${g.volume || 'Active'} on NYSE/NASDAQ`,
+                      timestamp: new Date().toISOString(),
+                    });
+                  });
+                }
+              }
+            } catch (fallbackErr: any) {
+              console.warn(`[FMP free tier direct fetch notice]: ${fallbackErr.message}`);
             }
           }
         }
