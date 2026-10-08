@@ -1,5 +1,5 @@
 import React from 'react';
-import { BarChart3, Users, Newspaper, DollarSign, Activity, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { BarChart3, Users, DollarSign, Activity, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { HealthReport } from '../types/index.ts';
 
 interface IntelligenceSourcesProps {
@@ -29,14 +29,6 @@ export const IntelligenceSources: React.FC<IntelligenceSourcesProps> = ({
       icon: Users,
       serverKey: 'social',
       color: 'text-indigo-400 bg-indigo-500/10 border-indigo-500/20',
-    },
-    {
-      id: 'news',
-      title: 'Google News',
-      subtitle: 'Trending topics & breaking news (<12h)',
-      icon: Newspaper,
-      serverKey: 'news',
-      color: 'text-rose-400 bg-rose-500/10 border-rose-500/20',
     },
     {
       id: 'fmp',

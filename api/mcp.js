@@ -26,13 +26,6 @@ export const MCP_SERVERS = {
     url: "https://server.smithery.ai/jordan-s648/PolymarketScan",
     description: "Prediction market probability signals and contracts volume",
   },
-  news: {
-    id: "news",
-    name: "Google News",
-    package: "google-news",
-    url: "https://server.smithery.ai/google/news",
-    description: "Real-time Google News topics and breaking catalysts (<12h)",
-  },
   fmp: {
     id: "fmp",
     name: "Financial Modeling Prep",
@@ -290,7 +283,6 @@ export class McpConnectionManager {
     const evidence = [];
 
     const targetServers = [
-      MCP_SERVERS.news,
       MCP_SERVERS.polymarket,
       MCP_SERVERS.social,
       MCP_SERVERS.fmp,
@@ -326,38 +318,8 @@ export class McpConnectionManager {
 
         availableSources.push(server.id);
         const tools = discovery.tools;
-        const topicQuery = params.query || (params.sectors && params.sectors.join(' ')) || 'growth momentum';
 
-        // 1. Google News
-        if (server.id === 'news') {
-          const searchTool = tools.find((t) => t.includes('search') || t.includes('news')) || tools[0];
-          if (searchTool) {
-            try {
-              const res = await this.executeToolCall(server, searchTool, {
-                query: topicQuery,
-                timeWindow: '12h',
-                maxResults: 4,
-              });
-              const items = res?.result?.content || res?.result?.articles || [];
-              if (Array.isArray(items)) {
-                items.slice(0, 3).forEach((item, idx) => {
-                  evidence.push({
-                    sourceId: 'news',
-                    sourceName: 'Google News (<12h)',
-                    title: item.title || item.headline || `${topicQuery} catalyst update #${idx + 1}`,
-                    content: item.snippet || item.description || JSON.stringify(item).slice(0, 180),
-                    timestamp: new Date().toISOString(),
-                    url: item.url,
-                  });
-                });
-              }
-            } catch (err) {
-              console.warn(`[News error]: ${err.message}`);
-            }
-          }
-        }
-
-        // 2. PolymarketScan
+        // 1. PolymarketScan
         if (server.id === 'polymarket') {
           const marketTool = tools.find((t) => t.includes('market') || t.includes('event')) || tools[0];
           if (marketTool) {

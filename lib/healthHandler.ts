@@ -29,16 +29,12 @@ export interface HealthReport {
 export async function checkMcpHealth(): Promise<HealthReport> {
   const manager = new McpRuntimeManager();
 
-  // Servers explicitly required to be monitored:
-  // news, polymarket, reddit, social, fmp, crashtest, gmail
+  // Servers monitored: social, polymarket, fmp, crashtest
   const monitoredServerKeys: Array<keyof typeof MCP_SERVERS> = [
-    'news',
-    'polymarket',
-    'reddit',
     'social',
+    'polymarket',
     'fmp',
     'crashtest',
-    'gmail',
   ];
 
   const serverResults: Record<string, ServerHealthItem> = {};

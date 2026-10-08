@@ -315,7 +315,6 @@ export class McpRuntimeManager {
 
     // Prioritized data sources
     const targetServers = [
-      MCP_SERVERS.news,
       MCP_SERVERS.polymarket,
       MCP_SERVERS.social,
       MCP_SERVERS.fmp,
@@ -353,38 +352,8 @@ export class McpRuntimeManager {
 
         // Pick matching tool dynamically from discovered tools
         const tools = discovery.tools;
-        const topicQuery = params.query || params.sectors.join(' ') || 'high growth market catalyst';
 
-        // 1. Google News
-        if (server.id === 'news') {
-          const searchTool = tools.find((t) => t.includes('search') || t.includes('news') || t.includes('headlines')) || tools[0];
-          if (searchTool) {
-            try {
-              const res = await this.executeToolCall(server, searchTool, {
-                query: topicQuery,
-                timeWindow: '12h',
-                maxResults: 5,
-              });
-              const items = res?.result?.content || res?.result?.articles || [];
-              if (Array.isArray(items)) {
-                items.slice(0, 4).forEach((item: any, idx: number) => {
-                  evidence.push({
-                    sourceId: 'news',
-                    sourceName: 'Google News (<12h)',
-                    title: item.title || item.headline || `${topicQuery} news update #${idx + 1}`,
-                    content: item.snippet || item.description || JSON.stringify(item).slice(0, 180),
-                    timestamp: new Date().toISOString(),
-                    url: item.url,
-                  });
-                });
-              }
-            } catch (err: any) {
-              console.warn(`[News tool error]: ${err.message}`);
-            }
-          }
-        }
-
-        // 2. Polymarket
+        // 1. Polymarket
         if (server.id === 'polymarket') {
           const marketTool = tools.find((t) => t.includes('market') || t.includes('search') || t.includes('event')) || tools[0];
           if (marketTool) {

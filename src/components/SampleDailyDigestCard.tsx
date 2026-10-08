@@ -25,7 +25,7 @@ export const SampleDailyDigestCard: React.FC<SampleDailyDigestCardProps> = ({
       exchange: 'NYSE',
       pct: '+8.7%',
       summary:
-        'Weight-loss drug trial results trending on Google News, positive sentiment',
+        'Weight-loss drug trial results showing viral social momentum and strong volume',
     },
     {
       num: '3',
