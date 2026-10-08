@@ -66,7 +66,8 @@ export class McpRuntimeManager {
    */
   public async discoverTools(config: McpServerConfig): Promise<ToolDiscoveryResult> {
     const keyName = config.requiredEnvVar;
-    const apiKey = keyName ? process.env[keyName] : undefined;
+    const rawApiKey = keyName ? process.env[keyName] : undefined;
+    const apiKey = rawApiKey ? rawApiKey.trim().replace(/^["']|["']$/g, '') : undefined;
 
     if (keyName && (!apiKey || apiKey.trim() === '')) {
       return {
@@ -89,8 +90,10 @@ export class McpRuntimeManager {
       };
       if (apiKey) {
         headers['Authorization'] = `Bearer ${apiKey}`;
-        // Support Smithery apiKey query parameter if accepted
+        headers['x-smithery-api-key'] = apiKey;
+        // Support Smithery apiKey query parameters
         endpointUrl.searchParams.set('apiKey', apiKey);
+        endpointUrl.searchParams.set('api_key', apiKey);
       }
 
       const abortController = new AbortController();
@@ -246,7 +249,8 @@ export class McpRuntimeManager {
     args: Record<string, any>
   ): Promise<any> {
     const keyName = config.requiredEnvVar;
-    const apiKey = keyName ? process.env[keyName] : undefined;
+    const rawApiKey = keyName ? process.env[keyName] : undefined;
+    const apiKey = rawApiKey ? rawApiKey.trim().replace(/^["']|["']$/g, '') : undefined;
 
     // Safety: never make wallet or purchase calls
     const lowerTool = toolName.toLowerCase();
@@ -263,7 +267,9 @@ export class McpRuntimeManager {
     };
     if (apiKey) {
       headers['Authorization'] = `Bearer ${apiKey}`;
+      headers['x-smithery-api-key'] = apiKey;
       endpointUrl.searchParams.set('apiKey', apiKey);
+      endpointUrl.searchParams.set('api_key', apiKey);
     }
 
     // Call tool via JSON-RPC or transport
@@ -309,6 +315,7 @@ export class McpRuntimeManager {
 
     // Prioritized data sources
     const targetServers = [
+      MCP_SERVERS.hub,
       MCP_SERVERS.news,
       MCP_SERVERS.polymarket,
       MCP_SERVERS.social,
