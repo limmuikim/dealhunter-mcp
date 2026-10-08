@@ -148,13 +148,7 @@ GUARDRAILS & RULES:
    - keyRisk: specific downside catalyst or tail risk
    - bullets: MINIMUM 3 comprehensive bullet points written in easy-to-understand language for non-technical or non-financial savvy users.
    - citedSources: list of items cited, with mcpName (e.g., "Google News", "PolymarketScan", "Social Superpowers", "Financial Modeling Prep") and itemTitle.
-7. Perform an objective Risk Check:
-   - overallRiskLevel
-   - objectiveEvaluation: flag unreasonable expectations like 10X return as high/extreme risk of principal loss
-   - downsideBuffer
-   - volatilityFlag
-   - capitalPreservationNote
-8. FMP Free Tier Compatibility: Base all FMP market metrics strictly on data available under the Financial Modeling Prep (FMP) Free Tier plan (standard stock quotes, P/E ratios, 52-week high/low range, daily volume, and market gainers for US equities on NYSE/NASDAQ). All stock tickers recommended must be tradeable on US exchanges.
+7. FMP Free Tier Compatibility: Base all FMP market metrics strictly on data available under the Financial Modeling Prep (FMP) Free Tier plan (standard stock quotes, P/E ratios, 52-week high/low range, daily volume, and market gainers for US equities on NYSE/NASDAQ). All stock tickers recommended must be tradeable on US exchanges.
 
 Respond ONLY with valid JSON with this exact structure:
 {
@@ -180,14 +174,7 @@ Respond ONLY with valid JSON with this exact structure:
         { "mcpName": "...", "itemTitle": "..." }
       ]
     }
-  ],
-  "riskCheck": {
-    "overallRiskLevel": "High",
-    "objectiveEvaluation": "...",
-    "downsideBuffer": "...",
-    "volatilityFlag": "...",
-    "capitalPreservationNote": "..."
-  }
+  ]
 }`;
 
     const geminiResponse = await ai.models.generateContent({
@@ -242,12 +229,12 @@ Respond ONLY with valid JSON with this exact structure:
       emailSubject: `Dealhunter X: your Top 3 trade ideas for ${todayDateStr}`,
       tagline: "Find tomorrow's ten-baggers, today.",
       ideas,
-      riskCheck: parsed.riskCheck || {
+      riskCheck: {
         overallRiskLevel: riskAppetite,
-        objectiveEvaluation: `Your stated goal of "${financialObjective}" involves significant variance. A 10X return represents extreme speculation and cannot be guaranteed.`,
-        downsideBuffer: 'Suggested stop-loss at 7-10% below entry to avoid capital impairment.',
-        volatilityFlag: 'Elevated due to short-term catalyst trading.',
-        capitalPreservationNote: 'Never risk more than you can comfortably afford to lose.',
+        objectiveEvaluation: `Stated objective: "${financialObjective}". Educational simulation mode without algorithmic risk-model gating.`,
+        downsideBuffer: 'Suggested stop-loss at 7-10% below entry to manage capital impairment.',
+        volatilityFlag: 'Subject to public market catalyst volatility.',
+        capitalPreservationNote: 'Capital preservation first. Never trade with capital you cannot afford to lose.',
       },
       sourcesConsulted: gathering.availableSources,
       unavailableSources: gathering.unavailableSources,
