@@ -7,7 +7,7 @@
 
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
-import { MCP_SERVERS, McpServerConfig } from "./mcpServers.ts";
+import { MCP_SERVERS, type McpServerConfig } from "./mcpServers.ts";
 
 export interface ToolDiscoveryResult {
   serverId: string;

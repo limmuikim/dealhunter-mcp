@@ -4,7 +4,7 @@
  * without exposing any secrets or keys.
  */
 
-import { MCP_SERVERS, McpServerConfig } from "./mcpServers.ts";
+import { MCP_SERVERS, type McpServerConfig } from "./mcpServers.ts";
 import { McpRuntimeManager } from "./mcpClient.ts";
 
 export interface ServerHealthItem {
