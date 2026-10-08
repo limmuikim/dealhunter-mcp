@@ -55,15 +55,8 @@ export async function handleIdeas(req: any, res: any) {
   }
 
   // GUARDRAIL ENFORCEMENT:
-  // "Never write any key or token into any file, comment, README, log or response.
-  // Read credentials only from process.env: SMITHERY_API_KEY, FMP_ACCESS_TOKEN.
-  // If one is missing or empty, return 503 {"error":"<NAME> is not set. Add it in Secrets / Vercel and redeploy."} before making any outbound call."
-  if (!process.env.SMITHERY_API_KEY || process.env.SMITHERY_API_KEY.trim() === '') {
-    return res.status(503).json({
-      error: "SMITHERY_API_KEY is not set. Add it in Secrets / Vercel and redeploy."
-    });
-  }
-
+  // Read credentials only from process.env: FMP_ACCESS_TOKEN.
+  // If missing or empty, return 503 {"error":"<NAME> is not set. Add it in Secrets / Vercel and redeploy."} before making outbound calls.
   if (!process.env.FMP_ACCESS_TOKEN || process.env.FMP_ACCESS_TOKEN.trim() === '') {
     return res.status(503).json({
       error: "FMP_ACCESS_TOKEN is not set. Add it in Secrets / Vercel and redeploy."

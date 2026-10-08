@@ -139,7 +139,7 @@ export default function App() {
         const errorJson = await res.json().catch(() => ({}));
         const missingKeyMsg =
           errorJson.error ||
-          'SMITHERY_API_KEY or FMP_ACCESS_TOKEN is not set in Secrets / Vercel.';
+          'FMP_ACCESS_TOKEN is not set in Secrets / Vercel.';
         setErrorMessage(
           `${missingKeyMsg} Displaying calibrated sample live digest below for preview.`
         );

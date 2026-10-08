@@ -4,28 +4,19 @@
  */
 
 export interface McpServerConfig {
-  id: 'news' | 'polymarket' | 'reddit' | 'social' | 'fmp' | 'crashtest' | 'gmail' | 'hub';
+  id: 'news' | 'polymarket' | 'reddit' | 'social' | 'fmp' | 'crashtest' | 'gmail';
   name: string;
   url: string;
-  requiredEnvVar?: 'SMITHERY_API_KEY' | 'FMP_ACCESS_TOKEN';
+  requiredEnvVar?: 'FMP_ACCESS_TOKEN';
   description: string;
   sourceType: string;
 }
 
 export const MCP_SERVERS: Record<string, McpServerConfig> = {
-  hub: {
-    id: 'hub',
-    name: 'Dealhunter X MCP Hub',
-    url: 'https://mcp.smithery.ai/muikimlim-insead',
-    requiredEnvVar: 'SMITHERY_API_KEY',
-    description: 'Central Dealhunter X MCP aggregation endpoint',
-    sourceType: 'hub',
-  },
   social: {
     id: 'social',
     name: 'Social Superpowers',
     url: 'https://server.smithery.ai/pkobielak/social-superpowers',
-    requiredEnvVar: 'SMITHERY_API_KEY',
     description: 'Social media trend analysis & viral buzz sentiment',
     sourceType: 'social',
   },
@@ -33,7 +24,6 @@ export const MCP_SERVERS: Record<string, McpServerConfig> = {
     id: 'polymarket',
     name: 'PolymarketScan',
     url: 'https://server.smithery.ai/jordan-s648/PolymarketScan',
-    requiredEnvVar: 'SMITHERY_API_KEY',
     description: 'Prediction market volume and probability signals',
     sourceType: 'prediction',
   },
@@ -41,7 +31,6 @@ export const MCP_SERVERS: Record<string, McpServerConfig> = {
     id: 'news',
     name: 'Google News',
     url: 'https://server.smithery.ai/google/news',
-    requiredEnvVar: 'SMITHERY_API_KEY',
     description: 'Real-time trending news (< 12 hours) and breaking catalysts',
     sourceType: 'news',
   },
@@ -57,7 +46,6 @@ export const MCP_SERVERS: Record<string, McpServerConfig> = {
     id: 'reddit',
     name: 'Reddit Trends',
     url: 'https://server.smithery.ai/pkobielak/social-superpowers',
-    requiredEnvVar: 'SMITHERY_API_KEY',
     description: 'Retail trading crowd momentum and forum mentions',
     sourceType: 'social',
   },
@@ -65,7 +53,6 @@ export const MCP_SERVERS: Record<string, McpServerConfig> = {
     id: 'crashtest',
     name: 'Risk CrashTest',
     url: 'https://server.smithery.ai/crashtest',
-    requiredEnvVar: 'SMITHERY_API_KEY',
     description: 'Automated downside stress-testing and tail-risk validation',
     sourceType: 'risk',
   },
@@ -73,7 +60,6 @@ export const MCP_SERVERS: Record<string, McpServerConfig> = {
     id: 'gmail',
     name: 'Digest Dispatcher (Gmail)',
     url: 'https://server.smithery.ai/gmail',
-    requiredEnvVar: 'SMITHERY_API_KEY',
     description: 'Digest distribution and email confirmation channel',
     sourceType: 'email',
   },

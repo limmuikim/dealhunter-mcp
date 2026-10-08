@@ -315,7 +315,6 @@ export class McpRuntimeManager {
 
     // Prioritized data sources
     const targetServers = [
-      MCP_SERVERS.hub,
       MCP_SERVERS.news,
       MCP_SERVERS.polymarket,
       MCP_SERVERS.social,

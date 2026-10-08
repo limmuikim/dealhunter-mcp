@@ -100,7 +100,7 @@ export async function checkMcpHealth(): Promise<HealthReport> {
       ? `All primary MCP data pipelines healthy (${totalAnswered}/${monitoredServerKeys.length} online).`
       : overallStatus === 'degraded'
       ? `Partial MCP network connection (${totalAnswered}/${monitoredServerKeys.length} active). Check quota or network.`
-      : `MCP servers waiting for credentials or response. Configure SMITHERY_API_KEY and FMP_ACCESS_TOKEN.`;
+      : `MCP data pipelines standby. Configure FMP_ACCESS_TOKEN and check server connectivity.`;
 
   return {
     status: overallStatus,
