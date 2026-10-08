@@ -546,3 +546,17 @@ if (process.argv[1] && process.argv[1].endsWith('mcp.js')) {
     process.exit(1);
   });
 }
+
+/**
+ * Vercel Serverless Function Default Export Handler
+ */
+export default async function handler(req, res) {
+  try {
+    const manager = new McpConnectionManager();
+    const health = await manager.checkHealth();
+    return res.status(200).json(health);
+  } catch (err) {
+    return res.status(500).json({ error: err.message || 'Error executing MCP health runner' });
+  }
+}
+
