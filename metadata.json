@@ -1,0 +1,6 @@
+{
+  "name": "Dealhunter X",
+  "description": "Find tomorrow's ten-baggers, today. Discover curated trade ideas backed by prediction markets, news, and financial signals.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
