@@ -45,52 +45,54 @@ export async function checkMcpHealth(): Promise<HealthReport> {
   let totalConfigured = 0;
   let totalAnswered = 0;
 
-  for (const key of monitoredServerKeys) {
-    const config: McpServerConfig = MCP_SERVERS[key];
-    if (!config) continue;
+  await Promise.all(
+    monitoredServerKeys.map(async (key) => {
+      const config: McpServerConfig = MCP_SERVERS[key];
+      if (!config) return;
 
-    const keyName = config.requiredEnvVar;
-    const isConfigured = keyName ? Boolean(process.env[keyName] && process.env[keyName]!.trim().length > 0) : true;
+      const keyName = config.requiredEnvVar;
+      const isConfigured = keyName ? Boolean(process.env[keyName] && process.env[keyName]!.trim().length > 0) : true;
 
-    if (isConfigured) {
-      totalConfigured += 1;
-    }
-
-    try {
-      const discovery = await manager.discoverTools(config);
-
-      if (discovery.answered) {
-        totalAnswered += 1;
+      if (isConfigured) {
+        totalConfigured += 1;
       }
 
-      let details = discovery.statusMessage;
-      if (discovery.quotaIssue) {
-        details = `${config.name}: access or quota limit reached`;
-      } else if (!isConfigured) {
-        details = `${keyName || 'API Key'} not set in Secrets/Vercel`;
-      }
+      try {
+        const discovery = await manager.discoverTools(config);
 
-      serverResults[key] = {
-        id: config.id,
-        name: config.name,
-        configured: isConfigured,
-        answered: discovery.answered,
-        toolsDiscovered: discovery.tools.length,
-        status: discovery.answered ? 'online' : (discovery.quotaIssue ? 'quota_reached' : (isConfigured ? 'unreachable' : 'unconfigured')),
-        details,
-      };
-    } catch (err: any) {
-      serverResults[key] = {
-        id: config.id,
-        name: config.name,
-        configured: isConfigured,
-        answered: false,
-        toolsDiscovered: 0,
-        status: 'error',
-        details: `${config.name} connection error`,
-      };
-    }
-  }
+        if (discovery.answered) {
+          totalAnswered += 1;
+        }
+
+        let details = discovery.statusMessage;
+        if (discovery.quotaIssue) {
+          details = `${config.name}: access or quota limit reached`;
+        } else if (!isConfigured) {
+          details = `${keyName || 'API Key'} not set in Secrets/Vercel`;
+        }
+
+        serverResults[key] = {
+          id: config.id,
+          name: config.name,
+          configured: isConfigured,
+          answered: discovery.answered,
+          toolsDiscovered: discovery.tools.length,
+          status: discovery.answered ? 'online' : (discovery.quotaIssue ? 'quota_reached' : (isConfigured ? 'unreachable' : 'unconfigured')),
+          details,
+        };
+      } catch (err: any) {
+        serverResults[key] = {
+          id: config.id,
+          name: config.name,
+          configured: isConfigured,
+          answered: false,
+          toolsDiscovered: 0,
+          status: 'error',
+          details: `${config.name} connection error`,
+        };
+      }
+    })
+  );
 
   const overallStatus =
     totalAnswered >= 4 ? 'ok' : totalAnswered >= 1 ? 'degraded' : 'unconfigured';

@@ -100,7 +100,7 @@ export class McpConnectionManager {
       }
 
       const abortController = new AbortController();
-      const timeoutId = setTimeout(() => abortController.abort(), 6000);
+      const timeoutId = setTimeout(() => abortController.abort(), 2000);
 
       try {
         const transport = new SSEClientTransport(endpointUrl, {
@@ -171,7 +171,7 @@ export class McpConnectionManager {
               method: 'tools/list',
               params: {},
             }),
-            signal: AbortSignal.timeout(4000),
+            signal: AbortSignal.timeout(1500),
           });
 
           if ([401, 402, 403, 429].includes(probeRes.status)) {
@@ -267,7 +267,7 @@ export class McpConnectionManager {
           arguments: args,
         },
       }),
-      signal: AbortSignal.timeout(8000),
+      signal: AbortSignal.timeout(2500),
     });
 
     if ([401, 402, 403, 429].includes(response.status)) {
